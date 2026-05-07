@@ -10,9 +10,11 @@ root = Tk()
 
 canvas = Canvas(root, width=500, height=500, bg="white")
 canvas.pack()
-
+# northWall stores top walls of each cell
 north = []
+# eastWall stores right walls of each cell
 east = []
+# visited checks if cell was already used
 visit = []
 
 for i in range(rows):
@@ -105,7 +107,7 @@ def make():
             stack.pop()
 
         draw()
-        time.sleep(0.02)
+        time.sleep(0.03)
 
 def openWay(r, c, nr, nc):
 
