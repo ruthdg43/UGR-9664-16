@@ -106,7 +106,7 @@ def make():
             stack.pop()
 
         draw()
-        time.sleep(0.02)
+        time.sleep(0.08)
 
 def openWay(r, c, nr, nc):
 
@@ -145,7 +145,7 @@ def solve():
 
         canvas.create_oval(x - 7, y - 7, x + 7, y + 7, fill="red")
         root.update()
-        time.sleep(0.05)
+        time.sleep(0.08)
 
         if r == 9 and c == 9:
             return
@@ -172,7 +172,7 @@ def solve():
 
             canvas.create_oval(x - 7, y - 7, x + 7, y + 7, fill="blue")
             root.update()
-            time.sleep(0.05)
+            time.sleep(0.08)
 
             stack.pop()
 
