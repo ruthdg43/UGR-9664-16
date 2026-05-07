@@ -30,7 +30,6 @@ for i in range(rows):
         visit[i].append(False)
 
 def draw():
-
     canvas.delete("all")
 
     for i in range(rows):
@@ -107,7 +106,7 @@ def make():
             stack.pop()
 
         draw()
-        time.sleep(0.03)
+        time.sleep(0.02)
 
 def openWay(r, c, nr, nc):
 
