@@ -7,29 +7,32 @@ cols = 10
 size = 50
 
 root = Tk()
+root.title("Maze Project")
 
 canvas = Canvas(root, width=500, height=500, bg="white")
 canvas.pack()
-# northWall stores top walls of each cell
-north = []
-# eastWall stores right walls of each cell
-east = []
-# visited checks if cell was already used
-visit = []
+
+# northWall stores top walls
+northWall = []
+
+# eastWall stores right walls
+eastWall = []
+
+# visited checks used cells
+visited = []
 
 for i in range(rows):
-
-    north.append([])
-    east.append([])
-    visit.append([])
+    northWall.append([])
+    eastWall.append([])
+    visited.append([])
 
     for j in range(cols):
-
-        north[i].append(1)
-        east[i].append(1)
-        visit[i].append(False)
+        northWall[i].append(1)
+        eastWall[i].append(1)
+        visited[i].append(False)
 
 def draw():
+
     canvas.delete("all")
 
     for i in range(rows):
@@ -38,10 +41,10 @@ def draw():
             x = j * size
             y = i * size
 
-            if north[i][j] == 1:
+            if northWall[i][j] == 1:
                 canvas.create_line(x, y, x + size, y)
 
-            if east[i][j] == 1:
+            if eastWall[i][j] == 1:
                 canvas.create_line(x + size, y, x + size, y + size)
 
             if j == 0:
@@ -58,48 +61,48 @@ def draw():
 def breakWall(r, c, nr, nc):
 
     if nr == r and nc == c + 1:
-        east[r][c] = 0
+        eastWall[r][c] = 0
 
     if nr == r and nc == c - 1:
-        east[nr][nc] = 0
+        eastWall[nr][nc] = 0
 
     if nr == r + 1 and nc == c:
-        north[nr][nc] = 0
+        northWall[nr][nc] = 0
 
     if nr == r - 1 and nc == c:
-        north[r][c] = 0
+        northWall[r][c] = 0
 
-def make():
+def makeMaze():
 
     stack = []
     stack.append((0, 0))
-    visit[0][0] = True
+    visited[0][0] = True
 
     while len(stack) > 0:
 
         r, c = stack[-1]
 
-        next = []
+        nextCells = []
 
-        if r > 0 and visit[r - 1][c] == False:
-            next.append((r - 1, c))
+        if r > 0 and visited[r - 1][c] == False:
+            nextCells.append((r - 1, c))
 
-        if r < 9 and visit[r + 1][c] == False:
-            next.append((r + 1, c))
+        if r < rows - 1 and visited[r + 1][c] == False:
+            nextCells.append((r + 1, c))
 
-        if c > 0 and visit[r][c - 1] == False:
-            next.append((r, c - 1))
+        if c > 0 and visited[r][c - 1] == False:
+            nextCells.append((r, c - 1))
 
-        if c < 9 and visit[r][c + 1] == False:
-            next.append((r, c + 1))
+        if c < cols - 1 and visited[r][c + 1] == False:
+            nextCells.append((r, c + 1))
 
-        if len(next) > 0:
+        if len(nextCells) > 0:
 
-            nr, nc = random.choice(next)
+            nr, nc = random.choice(nextCells)
 
             breakWall(r, c, nr, nc)
 
-            visit[nr][nc] = True
+            visited[nr][nc] = True
             stack.append((nr, nc))
 
         else:
@@ -108,21 +111,21 @@ def make():
         draw()
         time.sleep(0.08)
 
-def openWay(r, c, nr, nc):
+def canMove(r, c, nr, nc):
 
     if nr == r and nc == c + 1:
-        return east[r][c] == 0
+        return eastWall[r][c] == 0
 
     if nr == r and nc == c - 1:
-        return east[nr][nc] == 0
+        return eastWall[nr][nc] == 0
 
     if nr == r + 1 and nc == c:
-        return north[nr][nc] == 0
+        return northWall[nr][nc] == 0
 
     if nr == r - 1 and nc == c:
-        return north[r][c] == 0
+        return northWall[r][c] == 0
 
-def solve():
+def solveMaze():
 
     used = []
 
@@ -145,26 +148,26 @@ def solve():
 
         canvas.create_oval(x - 7, y - 7, x + 7, y + 7, fill="red")
         root.update()
-        time.sleep(0.08)
+        time.sleep(0.12)
 
         if r == 9 and c == 9:
             return
 
         move = False
 
-        if r > 0 and used[r - 1][c] == False and openWay(r, c, r - 1, c):
+        if r > 0 and used[r - 1][c] == False and canMove(r, c, r - 1, c):
             stack.append((r - 1, c))
             move = True
 
-        elif r < 9 and used[r + 1][c] == False and openWay(r, c, r + 1, c):
+        elif r < 9 and used[r + 1][c] == False and canMove(r, c, r + 1, c):
             stack.append((r + 1, c))
             move = True
 
-        elif c > 0 and used[r][c - 1] == False and openWay(r, c, r, c - 1):
+        elif c > 0 and used[r][c - 1] == False and canMove(r, c, r, c - 1):
             stack.append((r, c - 1))
             move = True
 
-        elif c < 9 and used[r][c + 1] == False and openWay(r, c, r, c + 1):
+        elif c < 9 and used[r][c + 1] == False and canMove(r, c, r, c + 1):
             stack.append((r, c + 1))
             move = True
 
@@ -172,11 +175,11 @@ def solve():
 
             canvas.create_oval(x - 7, y - 7, x + 7, y + 7, fill="blue")
             root.update()
-            time.sleep(0.08)
+            time.sleep(0.12)
 
             stack.pop()
 
-make()
-solve()
+makeMaze()
+solveMaze()
 
 root.mainloop()
